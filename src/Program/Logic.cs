@@ -17,25 +17,25 @@ public class Logic
         {
             for (int j = 0; j < ancho; j++)
             {
-                int aliveNeighbors = CountAliveNeighbors(i, j);
+                int vecinosVivos = ContarVecinos(i, j);
 
-                if (_board.Tablero[i, j]) // Célula viva
+                if (_board.Tablero[i, j])
                 {
-                    nextGeneration[i, j] = aliveNeighbors == 2 || aliveNeighbors == 3;
+                    nextGeneration[i, j] = vecinosVivos == 2 || vecinosVivos == 3;
                 }
-                else // Célula muerta
+                else
                 {
-                    nextGeneration[i, j] = aliveNeighbors == 3;
+                    nextGeneration[i, j] = vecinosVivos == 3;
                 }
             }
         }
 
-        _board.SetMatrix(nextGeneration);
+        _board.SetTablero(nextGeneration);
     }
 
-    private int CountAliveNeighbors(int row, int col)
+    private int ContarVecinos(int row, int col)
     {
-        int aliveNeighbors = 0;
+        int vecinosVivos = 0;
         int largo = _board.Largo;
         int ancho = _board.Ancho;
 
@@ -52,12 +52,12 @@ public class Logic
                 {
                     if (_board.Tablero[newRow, newCol])
                     {
-                        aliveNeighbors++;
+                        vecinosVivos++;
                     }
                 }
             }
         }
 
-        return aliveNeighbors;
+        return vecinosVivos;
     }
 }

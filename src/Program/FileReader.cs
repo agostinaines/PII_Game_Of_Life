@@ -3,28 +3,27 @@ using System.IO;
 
 public class FileReader
 {
-    public int[,] ReadMatrixFromFile(string filePath)
+    public Board LeerTablero(string filePath)
     {
-        // Leer todas las líneas del archivo
         string[] lines = File.ReadAllLines(filePath);
 
-        // Determinar el tamaño de la matriz
-        int rows = lines.Length;
-        int cols = lines[0].Length;
+        int largo = lines.Length;
+        int ancho = lines[0].Length;
 
-        // Crear la matriz
-        int[,] matrix = new int[rows, cols];
+        Board board = new Board(largo, ancho);
 
-        // Llenar la matriz con los valores del archivo
-        for (int i = 0; i < rows; i++)
+        bool[,] table = new bool[largo, ancho];
+
+        for (int i = 0; i < largo; i++)
         {
-            for (int j = 0; j < cols; j++)
+            for (int j = 0; j < ancho; j++)
             {
-                // Convertir el carácter en entero (1 o 0)
-                matrix[i, j] = lines[i][j] - '0';
+                table[i, j] = lines[i][j] == '1';
             }
         }
 
-        return matrix;
+        board.SetTablero(table);
+
+        return board;
     }
 }
