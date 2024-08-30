@@ -1,59 +1,63 @@
-using System;
-
-namespace Ucu.Poo.GameOfLife;
-
 public class Logic
 {
-    public Board Tablero { get; set; }
+    private Board _board;
 
-    public Logic(Board tablero)
+    public Logic(Board board)
     {
-        this.Tablero = tablero;
+        _board = board;
     }
 
-    public void Generation()
+    public void UpdateBoard()
     {
-        bool[,] tableroActual = Board.Tablero;
-        int boardAncho = tableroActual.GetLength(0);
-        int boardLargo = tableroActual.GetLength(1);
+        int largo = _board.Largo;
+        int ancho = _board.Ancho;
+        bool[,] nextGeneration = new bool[largo, ancho];
 
-        bool[,] tableroNuevo = new bool[boardAncho, boardLargo];
-
-        for (int x = 0; x < boardAncho; x++)
+        for (int i = 0; i < largo; i++)
         {
-            for (int y = 0; y < boardLargo; y++)
+            for (int j = 0; j < ancho; j++)
             {
-                int vecinosVivos = 0;
+                int aliveNeighbors = CountAliveNeighbors(i, j);
 
-                for (int i = x - 1; i <= x; i++)
+                if (_board.Tablero[i, j]) // Célula viva
                 {
-                    for (int j = y - 1; j <= y + 1; j++)
-                    {
-                        if (i >= 0 && i < boardAncho && j >= 0 && j < boardLargo && tableroActual[i, j]);
-                        vecinosVivos++;
-                    }
+                    nextGeneration[i, j] = aliveNeighbors == 2 || aliveNeighbors == 3;
                 }
-
-                if (tableroActual[x, y])
+                else // Célula muerta
                 {
-                    vecinosVivos--;
+                    nextGeneration[i, j] = aliveNeighbors == 3;
                 }
-
-                if ((tableroActual[x, y] && vecinosVivos < 2) || (tableroActual[x, y] && vecinosVivos > 3))
-                {
-                    tableroNuevo[x, y] = false; // célula muere por soledad o muere por sobrepoblación
-                }
-                else if (!tableroActual[x, y] && vecinosVivos == 3)
-                {
-                    tableroNuevo[x, y] = true; // célula revive
-                }
-                else
-                {
-                    tableroNuevo[x, y] = true; // se mantiene el valor
-                }
-
-                tableroActual = tableroNuevo;
             }
         }
+
+        _board.SetMatrix(nextGeneration);
+    }
+
+    private int CountAliveNeighbors(int row, int col)
+    {
+        int aliveNeighbors = 0;
+        int largo = _board.Largo;
+        int ancho = _board.Ancho;
+
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i == 0 && j == 0) continue;
+
+                int newRow = row + i;
+                int newCol = col + j;
+
+                if (newRow >= 0 && newRow < largo && newCol >= 0 && newCol < ancho)
+                {
+                    if (_board.Tablero[newRow, newCol])
+                    {
+                        aliveNeighbors++;
+                    }
+                }
+            }
+        }
+
+        return aliveNeighbors;
     }
 }
